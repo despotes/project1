@@ -9,22 +9,30 @@
 </head>
 <body>
     <header class="w3-container">
-        <h1 class="w3-center">Liber FOR YOU</h1>
+        <h1 class="w3-center"><span class="w3-green">Liber</span> FOR <span class="w3-red">YOU</span></h1>
         <nav class="w3-bar w3-black">
-            <a href="#" class="w3-bar-item w3-button">Home</a>
+            <a href="{{ url_for('index') }}" class="w3-bar-item w3-button">Home</a>
             <a href="#" class="w3-bar-item w3-button">Link 1</a>
             <a href="#" class="w3-bar-item w3-button">Link 2</a>
-            <a href="#" class="w3-bar-item w3-button">Link 3</a>
+            {% if session.user_id %}
+            <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-right w3-indigo">Log out</a>
+            <button class="w3-bar-item w3-button w3-right w3-indigo" disabled>{{ session.user_id }}</button>
+            {% else %}
+            <a href="{{ url_for('register') }}" class="w3-bar-item w3-button w3-right w3-indigo">Register</a>
+            {% endif %}
         </nav>
     </header>
-    {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="w3-panel w3-red">
-            <h3>Danger! 401</h3>
-            {% for message in messages %}
-            <p>{{ message }}</p>
-            {% endfor %}
+            {% for category, message in messages %}
+              {% if category == 'Error' %}
+                <div class="w3-container w3-panel w3-red">
+               {% else %}
+               <div class="w3-container w3-panel w3-green">
+              {% endif %}
+            <h3 class="w3-center">{{ message }}</h3>
             </div>
+            {% endfor %}
         {% endif %}
     {% endwith %}
 

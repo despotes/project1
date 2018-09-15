@@ -61,7 +61,7 @@ def login():
 
         # Ensure username exists and password is correct
         if not rows or not check_password_hash(rows[0]["hash"], request.form.get("password")):
-            flash("Invalid Username and Password")
+            flash(u"Invalid Username and Password", 'Error')
             return redirect('/')
 
         # Remember which user has logged in
