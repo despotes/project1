@@ -17,10 +17,18 @@
             <a href="#" class="w3-bar-item w3-button">Link 3</a>
         </nav>
     </header>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="w3-panel w3-red">
+            <h3>Danger! 401</h3>
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
+    {% block body %}{% endblock %}
 
-
-    {% block body %}
-    {% endblock %}
 </body>
 </html>
