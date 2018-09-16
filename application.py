@@ -1,7 +1,7 @@
 import os
 import requests
 
-from flask import Flask, session, render_template, request, redirect, flash, url_for
+from flask import Flask, session, render_template, request, redirect, flash, url_for, jsonify
 from flask_session import Session
 
 from sqlalchemy import create_engine
@@ -163,10 +163,13 @@ def search():
 
     return render_template("search.html", rows=rows)
 
-@app.route("/book")
+@app.route("/book/<isbn>")
 @login_required
 
-def book():
-    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "r8aSwkqLQJhwGf5DZUMt7g", "isbns": "9781632168146"})
+def book(isbn):
+  
+    KEY = "r8aSwkqLQJhwGf5DZUMt7g"
 
-    return res.json()
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": KEY, "isbns": isbn})
+
+    return jsonify(res.json())

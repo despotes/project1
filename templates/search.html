@@ -18,7 +18,7 @@
     {% for id, isbn, title, author, year in rows %}
     <tr>
         <td>{{ isbn }}</td> <td>{{ title }}</td> <td>{{ author }}</td> <td>{{ year }}</td>
-        <td><a href="#">Link</a></td>
+        <td><a href="{{ url_for('book', isbn = isbn) }}">Link</a></td>
     </tr>
     {% endfor %}
     </tbody>
