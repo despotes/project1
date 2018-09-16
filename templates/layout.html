@@ -16,19 +16,20 @@
             <a href="#" class="w3-bar-item w3-button">Link 2</a>
             {% if session.user_id %}
             <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-right w3-indigo">Log out</a>
-            <button class="w3-bar-item w3-button w3-right w3-indigo" disabled>{{ session.user_id }}</button>
+            <button class="w3-bar-item w3-button w3-block w3-right w3-teal">{{ session.user_id[1] }}</button>
             {% else %}
             <a href="{{ url_for('register') }}" class="w3-bar-item w3-button w3-right w3-indigo">Register</a>
             {% endif %}
         </nav>
     </header>
+    <main class="w3-container">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
               {% if category == 'Error' %}
-                <div class="w3-container w3-panel w3-red">
+                <div class="w3-panel w3-red">
                {% else %}
-               <div class="w3-container w3-panel w3-green">
+               <div class="w3-panel w3-green">
               {% endif %}
             <h3 class="w3-center">{{ message }}</h3>
             </div>
@@ -37,6 +38,6 @@
     {% endwith %}
 
     {% block body %}{% endblock %}
-
+    </main>
 </body>
 </html>

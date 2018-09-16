@@ -1,23 +1,31 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Index
+    Home
 {% endblock %}
 
 {% block body %}
 <div class="w3-display-container w3-margin-top">
         
-        <form class="w3-display-topmiddle w3-container w3-card-4" action="{{ url_for('login') }}" method="post">
-        <h1>Sign In</h1>
+        <form class="w3-display-topmiddle w3-third w3-container w3-card-4" action="#" method="post">
+        <h1 class="w3-center">Look up for a Book</h1>
+        
         <p>
-        <input class="w3-input" type="text" name="username">
-        <label>Name</label></p>
+        <input class="w3-input" type="text" name="isbn">
+        <label>ISBN</label></p>
         <p>
-        <input class="w3-input" type="password" name="password">
-        <label>Password</label></p>
+        <input class="w3-input" type="text" name="title">
+        <label>Title</label></p>
+        <p>
+        <input class="w3-input" type="text" name="author">
+        <label>Author</label></p>
+        <p>
+        <input class="w3-input" type="number" name="year">
+        <label>Year</label></p>
+        
             
-        <p>
-        <button class="w3-button w3-section w3-teal w3-ripple"> Log in </button></p>
+        <p class="w3-center">
+        <button class="w3-button w3-section w3-teal w3-ripple w3-large"> Search </button></p>
         
         </form>
         

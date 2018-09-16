@@ -29,10 +29,11 @@ db = scoped_session(sessionmaker(bind=engine))
 
 
 @app.route("/")
+@login_required
 def index():
     return render_template("index.html")
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["GET","POST"])
 def login():
     """Log user in"""
 
@@ -65,12 +66,16 @@ def login():
             return redirect('/')
 
         # Remember which user has logged in
-        session["user_id"] = rows[0][0]
+        session["user_id"] = rows[0][0:2]
 
-        flash("You have login successfully")
+        flash("You have logged successfully")
 
         # Redirect user to home page
         return redirect("/")
+    
+    else:
+
+        return render_template("login.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -106,11 +111,11 @@ def register():
             return redirect('/register')
 
         ids = db.execute("SELECT id FROM users WHERE username = :username",
-         {'username': username}).fetchone()
+         {'username': username}).fetchall()
         db.commit()
 
         print(ids)
-        session["user_id"] = ids[0]
+        session["user_id"] = ids[0][0:2]
 
         flash("You have registered successfully!")
         return redirect("/")
