@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Search
+{% endblock %}
+
+{% block body %}
+<table class="w3-table-all">
+
+    <thead>
+        <tr class="w3-red">
+            <th>ISBN</th> <th>Title</th> <th>Author</th> <th>Year</th> <th>Book's Page</th>
+        </tr>
+    </thead>
+
+
+    <tbody>
+    {% for id, isbn, title, author, year in rows %}
+    <tr>
+        <td>{{ isbn }}</td> <td>{{ title }}</td> <td>{{ author }}</td> <td>{{ year }}</td>
+        <td><a href="#">Link</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+{% endblock %}

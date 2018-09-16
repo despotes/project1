@@ -1,4 +1,5 @@
 import os
+import requests
 
 from flask import Flask, session, render_template, request, redirect, flash, url_for
 from flask_session import Session
@@ -132,3 +133,40 @@ def logout():
 
     # Redirect user to login form
     return redirect("/")
+
+@app.route("/search", methods=["GET"])
+@login_required
+def search():
+    
+    if not request.args.get("isbn") and not request.args.get('title') and not request.args.get('author') and not request.args.get('year'):
+       
+       flash(u"You must provide at least one query", "Error")
+       return redirect("/")
+    
+
+    isbn = "%" if not request.args.get("isbn") else "%" + request.args.get("isbn") + "%"
+    title = "%" if not request.args.get('title') else "%" + request.args.get('title') + "%"
+    author = "%" if not request.args.get('author') else "%" + request.args.get('author') + "%"
+    year = "%" if not request.args.get('year') else "%" + request.args.get('year') + "%"
+
+    print(isbn, title, author, year)
+
+    rows = db.execute(""" SELECT * FROM books WHERE isbn ILIKE :isbn 
+                        AND title ILIKE :title AND author ILIKE :author 
+                        AND CAST(year AS VARCHAR(4)) ILIKE :year LIMIT 10""",
+                        {"isbn": isbn, "title": title, "author": author, "year": year}).fetchall()
+    db.commit()
+
+    if len(rows) == 0:
+        flash("No Results Found", "Error")
+        return redirect("/")
+
+    return render_template("search.html", rows=rows)
+
+@app.route("/book")
+@login_required
+
+def book():
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "r8aSwkqLQJhwGf5DZUMt7g", "isbns": "9781632168146"})
+
+    return res.json()
