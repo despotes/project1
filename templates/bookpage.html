@@ -5,12 +5,12 @@
 {% endblock %}
 
 {% block body %}
-<article class="w3-container w3-card w3-margin">
-    <section class="w3-container w3-cell-row">
-        <div class="w3-container w3-red w3-cell">
+<article class="w3-content w3-card w3-padding">
+    <section class="w3-cell-row w3-card-4">
+        <div class="w3-container w3-cell w3-red w3-cell-middle w3-center w3-mobile">
                 <i class="fas fa-book-reader fa-9x"></i>
         </div>
-        <section class="w3-container w3-green w3-cell">
+        <section class="w3-container w3-cell w3-green w3-mobile">
             <h1>Title: {{ liber[2] }}</h1>
             <h2>Author: {{ liber[3] }}</h2>
             <h3>Pubblication: {{ liber[4] }}</h3>
@@ -24,7 +24,7 @@
         <form action="/book/{{ liber[1] }}" method="POST">
                 <p class="w3-center">
                 <label class="w3-text-blue"><b>Score</b></label>
-                <input class="w3-border w3-round" type="number" name="score" min="0" max="5"></p>
+                <input class="w3-border w3-round" type="number" name="score" min="0" max="5" step="any" value="5" style="width:50px;"></p>
                  <p>
                 <label class="w3-text-blue"><b>Review</b></label>
                 <textarea class="w3-round" cols="86" rows ="5" name="textReview" style="resize: none; width: 100%;"></textarea></p>
@@ -37,11 +37,11 @@
 
     <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
         <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
-        <span class="w3-right w3-opacity">{{ review[2] }}</span>
+        <span class="w3-right w3-opacity">{{ review[2].strftime('%H:%M %A %d-%m-%Y %Z') }}</span>
         <h4>{{ review[3] }}</h4><br>
         <h5><b>Score: {{ review[1] }}/5</b></h5>
         <hr class="w3-clear">
-        <p>{{ review[0] }}</p> 
+        <p>{{ review[0]|replace("\r", "</br>"|safe) }}</p> 
       </div>
 
     {% endfor %}

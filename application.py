@@ -1,7 +1,7 @@
 import os
 import requests
 
-from flask import Flask, session, render_template, request, redirect, flash, url_for, jsonify
+from flask import Flask, session, render_template, request, redirect, flash, url_for, jsonify, abort
 from flask_session import Session
 
 from sqlalchemy import create_engine
@@ -181,7 +181,8 @@ def book(isbn):
 
     if request.method == "POST":
 
-        if db.execute("""SELECT * FROM reviews WHERE user_id = :user_id""", {"user_id": session["user_id"][0]}).rowcount > 0:
+        if db.execute("""SELECT * FROM reviews WHERE book_id = :book_id AND user_id = :user_id""",
+                      {"book_id": liber[0], "user_id": session["user_id"][0]}).rowcount > 0:
             flash(u"You have already reviewed this book", "Error")
             return redirect(f"/book/{isbn}")
 
@@ -200,3 +201,19 @@ def book(isbn):
     else:
 
         return render_template("bookpage.html", goodread = goodread, liber = liber, reviews = reviews)
+
+@app.route("/api/<string:isbn>")
+def api(isbn):
+    
+    liber = db.execute("""SELECT id, title, author, year, isbn FROM books WHERE isbn = :isbn""",
+                        {"isbn": isbn}).fetchone()
+    
+    if liber is None:
+        abort(404)
+
+    reviews = db.execute("""SELECT COUNT(*), AVG(score) FROM reviews WHERE book_id = :book_id""",
+                         {"book_id": liber[0]}).fetchone()
+        
+
+    return jsonify(average_score= 0 if reviews[1] is None else float(reviews[1]), title = liber[1], year=liber[3], isbn=liber[4],
+                    review_count=reviews[0], author=liber[2])
