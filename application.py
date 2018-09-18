@@ -163,7 +163,7 @@ def search():
 
     return render_template("search.html", rows=rows)
 
-@app.route("/book/<isbn>")
+@app.route("/book/<isbn>", methods=["GET", "POST"])
 @login_required
 
 def book(isbn):
@@ -172,4 +172,31 @@ def book(isbn):
 
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": KEY, "isbns": isbn})
 
-    return jsonify(res.json())
+    liber = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": isbn}).fetchone()
+
+    reviews = db.execute("""SELECT review_text, score, datetime, username FROM reviews
+                            JOIN users ON user_id = users.id WHERE book_id = :book_id""", {"book_id": liber[0]}).fetchall()
+
+    goodread = res.json() 
+
+    if request.method == "POST":
+
+        if db.execute("""SELECT * FROM reviews WHERE user_id = :user_id""", {"user_id": session["user_id"][0]}).rowcount > 0:
+            flash(u"You have already reviewed this book", "Error")
+            return redirect(f"/book/{isbn}")
+
+
+        db.execute("""INSERT INTO reviews (review_text, score, datetime, book_id, user_id) 
+                    VALUES(:text_review, :score, NOW(), :book_id, :user_id)""",
+                    {"text_review": request.form.get("textReview"), "score": request.form.get("score"),
+                    "book_id": liber[0], "user_id": session["user_id"][0]})
+        
+        db.commit()
+        
+       
+        
+        return redirect(f"/book/{isbn}")
+        
+    else:
+
+        return render_template("bookpage.html", goodread = goodread, liber = liber, reviews = reviews)
